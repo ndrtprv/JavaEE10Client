@@ -14,7 +14,7 @@ public class ReceiveMessageFromServer implements Runnable{
         BufferedReader in = new BufferedReader(new InputStreamReader(inputStreamServer));
         String serverMessage = null;
 
-        while (true) {
+        while (!"exit".equalsIgnoreCase(serverMessage)) {
             try {
                 serverMessage = in.readLine();
             } catch (IOException e) {
