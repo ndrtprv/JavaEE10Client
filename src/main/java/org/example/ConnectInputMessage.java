@@ -23,33 +23,37 @@ public class ConnectInputMessage implements Runnable{
 
     @Override
     public void run() {
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(inputStreamServer))){
-            String serverMessage;
 
-            while (true) {
+        BufferedReader in = new BufferedReader(new InputStreamReader(inputStreamServer));
+        String serverMessage = null;
+
+        while (true) {
+            try {
                 serverMessage = in.readLine();
-                if (serverMessage != null) {
-                    System.out.println(serverMessage);
-                    break;
-                }
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
             }
 
-            PrintWriter out;
-            BufferedReader inUser = new BufferedReader(new InputStreamReader(System.in));
-            String userMessage;
+            if (serverMessage != null) {
+                System.out.println(serverMessage);
+                break;
+            }
+        }
 
-            while (true) {
-                System.out.print("Enter the message: ");
+        PrintWriter out;
+        BufferedReader inUser = new BufferedReader(new InputStreamReader(System.in));
+        String userMessage = null;
+
+        do {
+            System.out.print("Enter the message: ");
+            try {
                 userMessage = inUser.readLine();
                 out = new PrintWriter(serverConnect.getOutputStream(), true);
                 out.println(userMessage);
-                if ("exit".equalsIgnoreCase(userMessage)) {
-                    break;
-                }
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
             }
-        } catch (IOException e) {
-            System.out.println("ERROR!");
-            System.out.println(e.getMessage());
-        }
+        } while (!"exit".equalsIgnoreCase(userMessage));
+
     }
 }

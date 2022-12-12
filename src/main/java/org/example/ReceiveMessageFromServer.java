@@ -3,7 +3,7 @@ package org.example;
 import java.io.*;
 
 public class ReceiveMessageFromServer implements Runnable{
-    private InputStream inputStreamServer;
+    private final InputStream inputStreamServer;
 
     public ReceiveMessageFromServer(InputStream inputStreamServer) {
         this.inputStreamServer = inputStreamServer;
@@ -11,19 +11,19 @@ public class ReceiveMessageFromServer implements Runnable{
 
     @Override
     public void run() {
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(inputStreamServer))){
-            String serverMessage;
+        BufferedReader in = new BufferedReader(new InputStreamReader(inputStreamServer));
+        String serverMessage = null;
 
-            while (true) {
+        while (true) {
+            try {
                 serverMessage = in.readLine();
-                if (serverMessage != null) {
-                    System.out.print("\n" + serverMessage + "\nEnter the message: ");
-                    break;
-                }
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
             }
-        } catch (IOException e) {
-            System.out.println("ERROR!");
-            System.out.println(e.getMessage());
+            if (serverMessage != null) {
+                System.out.print("\n" + serverMessage + "\nEnter the message: ");
+            }
         }
+
     }
 }
